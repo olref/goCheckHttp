@@ -1,0 +1,13 @@
+# CheckHttp config file
+
+[general]
+# list of url you want to check
+urls = [
+  "http://127.0.0.1",
+]
+
+[influx]
+InfluxURL  = "http://127.0.0.1:8086"
+InfluxDB   = "http_request"
+InfluxUser = "influx"
+InfluxPwd  = "influx"
