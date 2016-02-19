@@ -48,6 +48,13 @@ import (
 	"github.com/spf13/viper"
 )
 
+const (
+	DefInfluxURL  = "http://127.0.0.1:8086"
+	DefInfluxDB   = "influx"
+	DefInfluxUser = "influx"
+	DefInfluxPWD  = "influx"
+)
+
 type tomlConfig struct {
 	General generalConfig
 	Influx  ArchiverConfig
@@ -94,16 +101,29 @@ func main() {
 	viper.SetConfigName("config")
 	viper.AddConfigPath(".")
 
+	// init influx access with  default parameter (will be used if no config file
+	// can be loaded)
+	influxURL := DefInfluxURL
+	influxDB := DefInfluxDB
+	influxUser := DefInfluxUser
+	influxPWD := DefInfluxPWD
+
 	err := viper.ReadInConfig()
 	if err != nil { // Handle errors reading the config file
-		log.Fatalf("Fatal error config file: %s \n", err)
+		log.Printf("Can not read config file: %s \n", err)
+		log.Println("I'll try too use default parameters")
+	} else {
+		influxURL = viper.GetString("influx.influxurl")
+		influxDB = viper.GetString("influx.influxdb")
+		influxUser = viper.GetString("influx.influxuser")
+		influxPWD = viper.GetString("influx.influxpwd")
 	}
 
 	archConf := ArchiverConfig{
-		InfluxURL:  viper.GetString("influx.influxurl"),
-		InfluxDB:   viper.GetString("influx.influxdb"),
-		InfluxUser: viper.GetString("influx.influxuser"),
-		InfluxPwd:  viper.GetString("influx.influxpwd"),
+		InfluxURL:  influxURL,
+		InfluxDB:   influxDB,
+		InfluxUser: influxUser,
+		InfluxPwd:  influxPWD,
 	}
 
 	confURLList := viper.GetStringSlice("general.urls")
